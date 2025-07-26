@@ -57,6 +57,18 @@ export default function RootLayout() {
                   name="scan/results"
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                  name="(social)/community"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(social)/news"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(social)/add-community-post"
+                  options={{ headerShown: false }}
+                />
               </Stack>
             </AuthWrapper>
             <StatusBar style="dark" />

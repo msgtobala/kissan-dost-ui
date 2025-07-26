@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -36,9 +37,13 @@ export default function DashboardScreen() {
   };
 
   const handleMenuOptionPress = (option: string) => {
-    console.log(`Selected: ${option}`);
+    const lowerOption = option.toLowerCase();
+    if (lowerOption === "news") {
+      router.push("/(social)/news");
+    } else if (lowerOption === "community") {
+      router.push("/(social)/community");
+    }
     setIsHamburgerMenuOpen(false);
-    // Add navigation logic here for News and Community
   };
 
   return (
