@@ -5,8 +5,11 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Dimensions,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -23,6 +26,7 @@ export default function CropScreen() {
     { label: "7 days", value: "7 days" },
     { label: "1 month", value: "1 month" },
   ]);
+  const [showCurateModal, setShowCurateModal] = useState(false);
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
@@ -145,7 +149,7 @@ export default function CropScreen() {
       </View>
       {/* Main Features Section */}
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Smart Tools</ThemedText>
+        <ThemedText style={styles.sectionTitle}>Visual AI for Precision Farming</ThemedText>
 
         {/* AI Plant Diagnosis */}
         <View style={styles.featureCard}>
@@ -221,6 +225,7 @@ export default function CropScreen() {
           <TouchableOpacity
             style={styles.secondaryActionButton}
             activeOpacity={0.85}
+            onPress={() => router.push("/scan")}
           >
             <MaterialIcons
               name="add-photo-alternate"
@@ -263,6 +268,7 @@ export default function CropScreen() {
           <TouchableOpacity
             style={styles.secondaryActionButtonBlue}
             activeOpacity={0.85}
+            onPress={() => router.push("/scan")}
           >
             <MaterialIcons
               name="timeline"
@@ -275,6 +281,45 @@ export default function CropScreen() {
             </ThemedText>
           </TouchableOpacity>
         </View>
+
+        {/* Curate Suggestion Heading and Button */}
+        <ThemedText style={styles.sectionTitle}>Curate Suggestion</ThemedText>
+        <TouchableOpacity
+          style={[styles.primaryActionButton, styles.curateSuggestionButton, { backgroundColor: '#3F51B5', marginBottom: 16 }]}
+          activeOpacity={0.85}
+          onPress={() => setShowCurateModal(true)}
+        >
+          <MaterialCommunityIcons
+            name="lightbulb-on-outline"
+            size={20}
+            color="#fff"
+            style={{ marginRight: 8 }}
+          />
+          <ThemedText style={styles.primaryActionText}>Curate Suggestion</ThemedText>
+        </TouchableOpacity>
+
+        {/* Curate Suggestion Modal */}
+        <Modal
+          visible={showCurateModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowCurateModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Curate Suggestion</Text>
+              <Text style={styles.modalDescription}>
+              Suggest suitable crops based on the current season, market demand, available cultivation area, and soil type.
+              </Text>
+              <Pressable
+                style={styles.modalCloseButton}
+                onPress={() => setShowCurateModal(false)}
+              >
+                <Text style={styles.modalCloseButtonText}>Close</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -629,5 +674,51 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+  },
+  curateSuggestionButton: {
+    alignSelf: 'center',
+    width: 240,
+    paddingHorizontal: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    width: 300,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.light.success,
+    marginBottom: 12,
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: Colors.light.text,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalCloseButton: {
+    backgroundColor: Colors.light.success,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+  },
+  modalCloseButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
