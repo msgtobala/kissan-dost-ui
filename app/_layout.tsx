@@ -12,6 +12,7 @@ import AuthWrapper from "@/components/AuthWrapper";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { OnboardingProvider } from "@/contexts/OnboardingContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -29,23 +30,38 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <OnboardingProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        <SafeAreaView
+          style={{
+            flex: 1,
+            backgroundColor: "#F8F9FA",
+          }}
+          edges={["top", "left", "right"]}
         >
-          <AuthWrapper>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="auth" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="onboarding"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="scan" options={{ headerShown: false }} />
-            </Stack>
-          </AuthWrapper>
-          <StatusBar style="dark" />
-        </ThemeProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <AuthWrapper>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="auth" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="onboarding"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="scan/index"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="scan/results"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
+            </AuthWrapper>
+            <StatusBar style="dark" />
+          </ThemeProvider>
+        </SafeAreaView>
       </OnboardingProvider>
     </AuthProvider>
   );

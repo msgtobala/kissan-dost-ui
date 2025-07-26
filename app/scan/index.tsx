@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,6 +30,7 @@ export default function PlantScanScreen() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const cameraRef = useRef<any>(null);
   const { user } = useAuth();
+  const [capturedImageUri, setCapturedImageUri] = useState<string | null>(null);
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -69,15 +71,16 @@ export default function PlantScanScreen() {
           quality: 0.8,
           base64: true,
         });
+        setCapturedImageUri(photo.uri);
         setUploadProgress(30);
         if (!user) {
           Alert.alert("Error", "User not authenticated");
           setIsCapturing(false);
           setIsUploading(false);
           setUploadProgress(0);
+          setCapturedImageUri(null);
           return;
         }
-        // Upload image to Firebase Storage
         setUploadProgress(50);
         const response = await fetch(photo.uri);
         const blob = await response.blob();
@@ -89,7 +92,6 @@ export default function PlantScanScreen() {
         await uploadBytes(storageRef, blob);
         setUploadProgress(80);
         const downloadURL = await getDownloadURL(storageRef);
-        // Store download URL in Firestore
         const imageDocRef = doc(db, `users/${user.uid}/plant-images`, imageId);
         await setDoc(imageDocRef, {
           url: downloadURL,
@@ -102,6 +104,7 @@ export default function PlantScanScreen() {
         });
       } catch (error) {
         Alert.alert("Error", "Failed to capture or upload image");
+        setCapturedImageUri(null);
       } finally {
         setIsCapturing(false);
         setIsUploading(false);
@@ -111,91 +114,101 @@ export default function PlantScanScreen() {
   };
 
   return (
-    <CameraView
-      ref={cameraRef}
-      style={StyleSheet.absoluteFill}
-      facing={facing}
-      ratio="16:9"
-    >
-      {/* Header */}
-      <View style={styles.header} pointerEvents="box-none">
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
+    <View style={styles.container}>
+      {capturedImageUri ? (
+        <Image
+          source={{ uri: capturedImageUri }}
+          style={StyleSheet.absoluteFill}
+          resizeMode="cover"
+        />
+      ) : (
+        <CameraView
+          ref={cameraRef}
+          style={StyleSheet.absoluteFill}
+          facing={facing}
+          ratio="16:9"
         >
-          <MaterialIcons
-            name="arrow-back"
-            size={24}
-            color={Colors.light.background}
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Scan your plant</Text>
-        <View style={styles.headerSpacer} />
-      </View>
-
-      {/* Camera Overlay */}
-      <View style={styles.overlay} pointerEvents="box-none">
-        {/* Corner Brackets */}
-        <View style={[styles.corner, styles.topLeft]} />
-        <View style={[styles.corner, styles.topRight]} />
-        <View style={[styles.corner, styles.bottomLeft]} />
-        <View style={[styles.corner, styles.bottomRight]} />
-      </View>
-
-      {/* Bottom Controls */}
-      <View style={styles.bottomControls} pointerEvents="box-none">
-        <View style={styles.controlRow}>
-          {/* Left Icon - Profile/Collection */}
-          <TouchableOpacity style={styles.controlButton}>
-            <View style={styles.controlIconContainer}>
-              <MaterialCommunityIcons
-                name="account"
-                size={24}
-                color={Colors.light.success}
-              />
-            </View>
-          </TouchableOpacity>
-
-          {/* Center Shutter Button */}
-          <TouchableOpacity
-            style={[
-              styles.shutterButton,
-              (isCapturing || isUploading) && styles.shutterButtonDisabled,
-            ]}
-            onPress={takePicture}
-            disabled={isCapturing || isUploading}
-            activeOpacity={0.8}
-          >
-            <View style={styles.shutterButtonOuter}>
-              <View style={styles.shutterButtonInner}>
-                {isUploading ? (
-                  <ActivityIndicator
-                    size="small"
-                    color={Colors.light.primary}
-                  />
-                ) : (
-                  <MaterialIcons
-                    name="camera-alt"
-                    size={28}
-                    color={Colors.light.primary}
-                  />
-                )}
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          {/* Right Icon - Info */}
-          <TouchableOpacity style={styles.controlButton}>
-            <View style={styles.controlIconContainer}>
+          {/* Header */}
+          <View style={styles.header} pointerEvents="box-none">
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
               <MaterialIcons
-                name="info"
+                name="arrow-back"
                 size={24}
-                color={Colors.light.success}
+                color={Colors.light.background}
               />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Scan your plant</Text>
+            <View style={styles.headerSpacer} />
+          </View>
+
+          {/* Camera Overlay */}
+          <View style={styles.overlay} pointerEvents="box-none">
+            {/* Corner Brackets */}
+            <View style={[styles.corner, styles.topLeft]} />
+            <View style={[styles.corner, styles.topRight]} />
+            <View style={[styles.corner, styles.bottomLeft]} />
+            <View style={[styles.corner, styles.bottomRight]} />
+          </View>
+
+          {/* Bottom Controls */}
+          <View style={styles.bottomControls} pointerEvents="box-none">
+            <View style={styles.controlRow}>
+              {/* Left Icon - Profile/Collection */}
+              <TouchableOpacity style={styles.controlButton}>
+                <View style={styles.controlIconContainer}>
+                  <MaterialCommunityIcons
+                    name="account"
+                    size={24}
+                    color={Colors.light.success}
+                  />
+                </View>
+              </TouchableOpacity>
+
+              {/* Center Shutter Button */}
+              <TouchableOpacity
+                style={[
+                  styles.shutterButton,
+                  (isCapturing || isUploading) && styles.shutterButtonDisabled,
+                ]}
+                onPress={takePicture}
+                disabled={isCapturing || isUploading}
+                activeOpacity={0.8}
+              >
+                <View style={styles.shutterButtonOuter}>
+                  <View style={styles.shutterButtonInner}>
+                    {isUploading ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={Colors.light.primary}
+                      />
+                    ) : (
+                      <MaterialIcons
+                        name="camera-alt"
+                        size={28}
+                        color={Colors.light.primary}
+                      />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              {/* Right Icon - Info */}
+              <TouchableOpacity style={styles.controlButton}>
+                <View style={styles.controlIconContainer}>
+                  <MaterialIcons
+                    name="info"
+                    size={24}
+                    color={Colors.light.success}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+          </View>
+        </CameraView>
+      )}
       {/* Loading Overlay */}
       {(isCapturing || isUploading) && (
         <View style={styles.loadingOverlay} pointerEvents="box-none">
@@ -220,14 +233,16 @@ export default function PlantScanScreen() {
           </View>
         </View>
       )}
-    </CameraView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: "#fff",
+    paddingTop: 60,
+    paddingHorizontal: 20,
   },
   permissionContainer: {
     flex: 1,
@@ -262,7 +277,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 10,
     backgroundColor: Colors.light.primary + "CC", // semi-transparent
     zIndex: 2,
   },
@@ -272,7 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   headerTitle: {
-    color: Colors.light.primary,
+    color: "#fff",
     fontSize: 18,
     fontWeight: "600",
   },
@@ -356,7 +371,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 50,
     paddingVertical: 30,
     paddingHorizontal: 20,
     zIndex: 2,

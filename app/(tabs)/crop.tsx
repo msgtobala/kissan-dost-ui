@@ -9,261 +9,230 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
 export default function CropScreen() {
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Professional Header */}
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <ThemedText style={styles.headerTitle}>Crop Management</ThemedText>
-            <ThemedText style={styles.headerSubtitle}>
-              Monitor and optimize your farming operations
-            </ThemedText>
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <ThemedText style={styles.headerTitle}>Crop Management</ThemedText>
+          <ThemedText style={styles.headerSubtitle}>
+            Monitor and optimize your farming operations
+          </ThemedText>
+        </View>
+        <TouchableOpacity style={styles.headerButton} activeOpacity={0.8}>
+          <MaterialIcons
+            name="notifications"
+            size={24}
+            color={Colors.light.primary}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Main Features Section */}
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>Smart Tools</ThemedText>
+
+        {/* AI Plant Diagnosis */}
+        <View style={styles.featureCard}>
+          <View style={styles.featureHeader}>
+            <View style={styles.featureIconContainer}>
+              <MaterialCommunityIcons
+                name="camera-plus"
+                size={28}
+                color="#4CAF50"
+              />
+            </View>
+            <View style={styles.featureInfo}>
+              <ThemedText style={styles.featureTitle}>
+                AI Plant Diagnosis
+              </ThemedText>
+              <ThemedText style={styles.featureSubtitle}>
+                Instant disease detection
+              </ThemedText>
+            </View>
+            <TouchableOpacity style={styles.featureButton} activeOpacity={0.8}>
+              <MaterialIcons
+                name="arrow-forward-ios"
+                size={16}
+                color={Colors.light.primary}
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.headerButton} activeOpacity={0.8}>
+          <ThemedText style={styles.featureDescription}>
+            Scan your plants to get instant diagnosis, symptoms, and treatment
+            recommendations powered by AI.
+          </ThemedText>
+          <TouchableOpacity
+            style={styles.primaryActionButton}
+            activeOpacity={0.85}
+            onPress={() => router.push("/scan")}
+          >
             <MaterialIcons
-              name="notifications"
-              size={24}
-              color={Colors.light.primary}
+              name="camera-alt"
+              size={20}
+              color="#fff"
+              style={{ marginRight: 8 }}
             />
+            <ThemedText style={styles.primaryActionText}>Scan Plant</ThemedText>
           </TouchableOpacity>
         </View>
 
-        {/* Main Features Section */}
-        <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Smart Tools</ThemedText>
-
-          {/* AI Plant Diagnosis */}
-          <View style={styles.featureCard}>
-            <View style={styles.featureHeader}>
-              <View style={styles.featureIconContainer}>
-                <MaterialCommunityIcons
-                  name="camera-plus"
-                  size={28}
-                  color="#4CAF50"
-                />
-              </View>
-              <View style={styles.featureInfo}>
-                <ThemedText style={styles.featureTitle}>
-                  AI Plant Diagnosis
-                </ThemedText>
-                <ThemedText style={styles.featureSubtitle}>
-                  Instant disease detection
-                </ThemedText>
-              </View>
-              <TouchableOpacity
-                style={styles.featureButton}
-                activeOpacity={0.8}
-              >
-                <MaterialIcons
-                  name="arrow-forward-ios"
-                  size={16}
-                  color={Colors.light.primary}
-                />
-              </TouchableOpacity>
+        {/* Yield Estimator */}
+        <View style={styles.featureCard}>
+          <View style={styles.featureHeader}>
+            <View style={styles.featureIconContainer}>
+              <MaterialCommunityIcons name="sprout" size={28} color="#FF9800" />
             </View>
-            <ThemedText style={styles.featureDescription}>
-              Scan your plants to get instant diagnosis, symptoms, and treatment
-              recommendations powered by AI.
-            </ThemedText>
-            <TouchableOpacity
-              style={styles.primaryActionButton}
-              activeOpacity={0.85}
-              onPress={() => router.push("/scan")}
-            >
+            <View style={styles.featureInfo}>
+              <ThemedText style={styles.featureTitle}>
+                Yield Estimator
+              </ThemedText>
+              <ThemedText style={styles.featureSubtitle}>
+                Predict crop output
+              </ThemedText>
+            </View>
+            <TouchableOpacity style={styles.featureButton} activeOpacity={0.8}>
               <MaterialIcons
-                name="camera-alt"
-                size={20}
-                color="#fff"
-                style={{ marginRight: 8 }}
+                name="arrow-forward-ios"
+                size={16}
+                color={Colors.light.primary}
               />
-              <ThemedText style={styles.primaryActionText}>
-                Scan Plant
-              </ThemedText>
             </TouchableOpacity>
           </View>
-
-          {/* Yield Estimator */}
-          <View style={styles.featureCard}>
-            <View style={styles.featureHeader}>
-              <View style={styles.featureIconContainer}>
-                <MaterialCommunityIcons
-                  name="sprout"
-                  size={28}
-                  color="#FF9800"
-                />
-              </View>
-              <View style={styles.featureInfo}>
-                <ThemedText style={styles.featureTitle}>
-                  Yield Estimator
-                </ThemedText>
-                <ThemedText style={styles.featureSubtitle}>
-                  Predict crop output
-                </ThemedText>
-              </View>
-              <TouchableOpacity
-                style={styles.featureButton}
-                activeOpacity={0.8}
-              >
-                <MaterialIcons
-                  name="arrow-forward-ios"
-                  size={16}
-                  color={Colors.light.primary}
-                />
-              </TouchableOpacity>
-            </View>
-            <ThemedText style={styles.featureDescription}>
-              Estimate your crop yield and cost visually. Upload photos or enter
-              details for accurate predictions.
+          <ThemedText style={styles.featureDescription}>
+            Estimate your crop yield and cost visually. Upload photos or enter
+            details for accurate predictions.
+          </ThemedText>
+          <TouchableOpacity
+            style={styles.secondaryActionButton}
+            activeOpacity={0.85}
+          >
+            <MaterialIcons
+              name="add-photo-alternate"
+              size={20}
+              color="#fff"
+              style={{ marginRight: 8 }}
+            />
+            <ThemedText style={styles.secondaryActionText}>
+              Estimate Yield
             </ThemedText>
-            <TouchableOpacity
-              style={styles.secondaryActionButton}
-              activeOpacity={0.85}
-            >
-              <MaterialIcons
-                name="add-photo-alternate"
-                size={20}
-                color="#fff"
-                style={{ marginRight: 8 }}
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Quick Actions Grid */}
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
+        <View style={styles.quickActionsGrid}>
+          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
+            <View style={styles.quickActionIcon}>
+              <MaterialCommunityIcons
+                name="weather-partly-cloudy"
+                size={24}
+                color="#2196F3"
               />
-              <ThemedText style={styles.secondaryActionText}>
-                Estimate Yield
-              </ThemedText>
-            </TouchableOpacity>
+            </View>
+            <ThemedText style={styles.quickActionTitle}>Weather</ThemedText>
+            <ThemedText style={styles.quickActionSubtitle}>
+              Check forecast
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
+            <View style={styles.quickActionIcon}>
+              <MaterialCommunityIcons
+                name="calendar-clock"
+                size={24}
+                color="#FF9800"
+              />
+            </View>
+            <ThemedText style={styles.quickActionTitle}>Schedule</ThemedText>
+            <ThemedText style={styles.quickActionSubtitle}>
+              Manage tasks
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
+            <View style={styles.quickActionIcon}>
+              <MaterialCommunityIcons
+                name="chart-line"
+                size={24}
+                color="#4CAF50"
+              />
+            </View>
+            <ThemedText style={styles.quickActionTitle}>Analytics</ThemedText>
+            <ThemedText style={styles.quickActionSubtitle}>
+              View insights
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
+            <View style={styles.quickActionIcon}>
+              <MaterialCommunityIcons
+                name="book-open-variant"
+                size={24}
+                color="#9C27B0"
+              />
+            </View>
+            <ThemedText style={styles.quickActionTitle}>Guide</ThemedText>
+            <ThemedText style={styles.quickActionSubtitle}>
+              Learn farming
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Recent Activity */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <ThemedText style={styles.sectionTitle}>Recent Activity</ThemedText>
+          <TouchableOpacity activeOpacity={0.8}>
+            <ThemedText style={styles.viewAllText}>View All</ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.activityCard}>
+          <View style={styles.activityIcon}>
+            <MaterialCommunityIcons name="leaf" size={20} color="#4CAF50" />
+          </View>
+          <View style={styles.activityContent}>
+            <ThemedText style={styles.activityTitle}>
+              Wheat crop scanned
+            </ThemedText>
+            <ThemedText style={styles.activitySubtitle}>
+              Healthy - No issues detected
+            </ThemedText>
+            <ThemedText style={styles.activityTime}>2 hours ago</ThemedText>
           </View>
         </View>
 
-        {/* Quick Actions Grid */}
-        <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
-          <View style={styles.quickActionsGrid}>
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              activeOpacity={0.8}
-            >
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons
-                  name="weather-partly-cloudy"
-                  size={24}
-                  color="#2196F3"
-                />
-              </View>
-              <ThemedText style={styles.quickActionTitle}>Weather</ThemedText>
-              <ThemedText style={styles.quickActionSubtitle}>
-                Check forecast
-              </ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              activeOpacity={0.8}
-            >
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons
-                  name="calendar-clock"
-                  size={24}
-                  color="#FF9800"
-                />
-              </View>
-              <ThemedText style={styles.quickActionTitle}>Schedule</ThemedText>
-              <ThemedText style={styles.quickActionSubtitle}>
-                Manage tasks
-              </ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              activeOpacity={0.8}
-            >
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons
-                  name="chart-line"
-                  size={24}
-                  color="#4CAF50"
-                />
-              </View>
-              <ThemedText style={styles.quickActionTitle}>Analytics</ThemedText>
-              <ThemedText style={styles.quickActionSubtitle}>
-                View insights
-              </ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              activeOpacity={0.8}
-            >
-              <View style={styles.quickActionIcon}>
-                <MaterialCommunityIcons
-                  name="book-open-variant"
-                  size={24}
-                  color="#9C27B0"
-                />
-              </View>
-              <ThemedText style={styles.quickActionTitle}>Guide</ThemedText>
-              <ThemedText style={styles.quickActionSubtitle}>
-                Learn farming
-              </ThemedText>
-            </TouchableOpacity>
+        <View style={styles.activityCard}>
+          <View style={styles.activityIcon}>
+            <MaterialCommunityIcons name="sprout" size={20} color="#FF9800" />
+          </View>
+          <View style={styles.activityContent}>
+            <ThemedText style={styles.activityTitle}>
+              Yield estimate updated
+            </ThemedText>
+            <ThemedText style={styles.activitySubtitle}>
+              Corn field - 85% expected yield
+            </ThemedText>
+            <ThemedText style={styles.activityTime}>1 day ago</ThemedText>
           </View>
         </View>
-
-        {/* Recent Activity */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <ThemedText style={styles.sectionTitle}>Recent Activity</ThemedText>
-            <TouchableOpacity activeOpacity={0.8}>
-              <ThemedText style={styles.viewAllText}>View All</ThemedText>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.activityCard}>
-            <View style={styles.activityIcon}>
-              <MaterialCommunityIcons name="leaf" size={20} color="#4CAF50" />
-            </View>
-            <View style={styles.activityContent}>
-              <ThemedText style={styles.activityTitle}>
-                Wheat crop scanned
-              </ThemedText>
-              <ThemedText style={styles.activitySubtitle}>
-                Healthy - No issues detected
-              </ThemedText>
-              <ThemedText style={styles.activityTime}>2 hours ago</ThemedText>
-            </View>
-          </View>
-
-          <View style={styles.activityCard}>
-            <View style={styles.activityIcon}>
-              <MaterialCommunityIcons name="sprout" size={20} color="#FF9800" />
-            </View>
-            <View style={styles.activityContent}>
-              <ThemedText style={styles.activityTitle}>
-                Yield estimate updated
-              </ThemedText>
-              <ThemedText style={styles.activitySubtitle}>
-                Corn field - 85% expected yield
-              </ThemedText>
-              <ThemedText style={styles.activityTime}>1 day ago</ThemedText>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#F8F9FA",
-  },
   scrollContainer: {
     padding: 20,
     backgroundColor: "#F8F9FA",
