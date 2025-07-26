@@ -40,10 +40,11 @@ export default function RootLayout() {
                 name="onboarding"
                 options={{ headerShown: false }}
               />
-              <Stack.Screen name="home" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="scan" options={{ headerShown: false }} />
             </Stack>
           </AuthWrapper>
-          <StatusBar style="auto" />
+          <StatusBar style="dark" />
         </ThemeProvider>
       </OnboardingProvider>
     </AuthProvider>

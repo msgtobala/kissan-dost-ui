@@ -14,9 +14,9 @@ export default function Index() {
 
     if (user && isOnboardingComplete) {
       console.log(
-        "Index: User exists and onboarding complete, redirecting to home"
+        "Index: User exists and onboarding complete, redirecting to dashboard"
       );
-      router.replace("/home");
+      router.replace("/(tabs)/dashboard");
     } else if (user && !isOnboardingComplete) {
       console.log(
         "Index: User exists but onboarding not complete, redirecting to onboarding"
