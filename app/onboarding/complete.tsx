@@ -109,7 +109,7 @@ export default function OnboardingCompleteScreen() {
               <ThemedText style={styles.title}>Setup Complete!</ThemedText>
               <ThemedText style={styles.subtitle}>
                 Your profile has been created successfully. You&apos;re all set
-                to start using Kissan Dost!
+                to start using Kisan Dost!
               </ThemedText>
             </View>
 

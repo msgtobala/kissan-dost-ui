@@ -130,7 +130,7 @@ export default function Chatbot() {
               <Ionicons name="leaf" size={24} color="#10a37f" />
             </View>
             <View style={styles.headerText}>
-              <Text style={styles.headerTitle}>Kissan Assistant</Text>
+              <Text style={styles.headerTitle}>Kisan Assistant</Text>
               <Text style={styles.headerSubtitle}>Your farming companion</Text>
             </View>
           </View>
@@ -176,7 +176,7 @@ export default function Chatbot() {
               style={styles.textInput}
               value={inputText}
               onChangeText={setInputText}
-              placeholder="Message Kissan Assistant..."
+              placeholder="Message Kisan Assistant..."
               placeholderTextColor="#9ca3af"
               multiline
               maxLength={500}
@@ -200,7 +200,7 @@ export default function Chatbot() {
             </TouchableOpacity>
           </View>
           <Text style={styles.inputFooter}>
-            Kissan Assistant can make mistakes. Consider checking important
+            Kisan Assistant can make mistakes. Consider checking important
             information.
           </Text>
         </View>

@@ -81,7 +81,7 @@ export default function SignupScreen() {
               <View style={styles.titleSection}>
                 <ThemedText style={styles.title}>Create Account</ThemedText>
                 <ThemedText style={styles.subtitle}>
-                  Join Kissan Dost and start your farming journey
+                  Join Kisan Dost and start your farming journey
                 </ThemedText>
               </View>
 

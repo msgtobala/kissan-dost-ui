@@ -71,7 +71,7 @@ export default function LoginScreen() {
               <View style={styles.titleSection}>
                 <ThemedText style={styles.title}>Welcome Back</ThemedText>
                 <ThemedText style={styles.subtitle}>
-                  Sign in to your Kissan Dost account
+                  Sign in to your Kisan Dost account
                 </ThemedText>
               </View>
 

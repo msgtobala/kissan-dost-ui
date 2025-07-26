@@ -27,7 +27,7 @@ export default function OnboardingWelcomeScreen() {
 
             <View style={styles.titleSection}>
               <ThemedText style={styles.title}>
-                Welcome to Kissan Dost
+                Welcome to Kisan Dost
               </ThemedText>
               <ThemedText style={styles.subtitle}>
                 Let&apos;s get to know you better to provide personalized
