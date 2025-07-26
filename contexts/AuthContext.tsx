@@ -1,14 +1,14 @@
 // auth/AuthProvider.tsx
 
+import { IUser } from "@/types/auth";
 import {
-  User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import React, {
   ReactNode,
   createContext,
@@ -20,7 +20,7 @@ import { auth, db } from "../config/firebase";
 import firestoreService from "../services/firestoreService";
 
 interface AuthContextType {
-  user: User | null;
+  user: IUser | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (
@@ -48,7 +48,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
@@ -64,9 +64,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
       console.log("Current user", currentUser);
       if (currentUser) {
+        const userDetails = await getCurrentUserDetails();
+        if (userDetails) {
+          setUser(userDetails);
+        }
         await checkOnboardingCompletion(currentUser.uid);
       } else {
         setIsOnboardingComplete(false);
@@ -97,6 +100,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       displayName: displayName || "",
       createdAt: new Date().toISOString(),
     });
+  };
+
+  const getCurrentUserDetails = async (): Promise<IUser | null> => {
+    const user = auth.currentUser;
+    if (!user) {
+      return null;
+    }
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as IUser;
+        console.log("User data", userData);
+        return userData;
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   };
 
   const logout = async () => {

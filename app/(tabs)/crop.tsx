@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -9,16 +10,26 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BarChart } from "react-native-chart-kit";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const { width } = Dimensions.get("window");
 
 export default function CropScreen() {
+  const [open, setOpen] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState("1 day");
+  const [items, setItems] = useState([
+    { label: "1 day", value: "1 day" },
+    { label: "7 days", value: "7 days" },
+    { label: "1 month", value: "1 month" },
+  ]);
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
       showsVerticalScrollIndicator={false}
     >
       {/* Professional Header */}
+
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <ThemedText style={styles.headerTitle}>Crop Management</ThemedText>
@@ -35,6 +46,103 @@ export default function CropScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Period Dropdown */}
+      <View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <ThemedText style={styles.sectionTitle}>Price</ThemedText>
+          <View style={styles.dropdownWrapper}>
+            <DropDownPicker
+              open={open}
+              value={selectedPeriod}
+              items={items}
+              setOpen={setOpen}
+              setValue={setSelectedPeriod}
+              setItems={setItems}
+              style={styles.dropdownPicker}
+              dropDownContainerStyle={{
+                borderColor: Colors.light.primary,
+                borderRadius: 16,
+              }}
+              placeholder="Select period"
+              zIndex={3000}
+              zIndexInverse={1000}
+              listMode="SCROLLVIEW"
+            />
+          </View>
+        </View>
+
+        {/* Price Info Cards */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.priceInfoRow}
+          style={{ paddingVertical: 10 }}
+        >
+          {[
+            { name: "Wheat", price: "₹2,150/qtl" },
+            { name: "Rice", price: "₹1,950/qtl" },
+            { name: "Maize", price: "₹340/qtl" },
+          ].map((crop, idx) => (
+            <View style={styles.priceCard} key={crop.name}>
+              <ThemedText style={styles.priceCropName}>{crop.name}</ThemedText>
+              <ThemedText style={styles.priceValue}>{crop.price}</ThemedText>
+            </View>
+          ))}
+        </ScrollView>
+        {/* Bar Chart for Crop Prices */}
+        <ThemedText style={styles.sectionTitle}>Price Chart</ThemedText>
+        <View
+          style={{
+            alignItems: "center",
+            marginTop: 16,
+            marginBottom: 24,
+            backgroundColor: "white",
+          }}
+        >
+          <BarChart
+            data={{
+              labels: ["Wheat", "Rice", "Maize"],
+              datasets: [
+                {
+                  data: [2150, 1950, 340],
+                },
+              ],
+            }}
+            width={width - 40}
+            height={220}
+            yAxisLabel="₹"
+            yAxisSuffix="/qtl"
+            chartConfig={{
+              backgroundColor: "#fff",
+              backgroundGradientFrom: "#F8F9FA",
+              backgroundGradientTo: "#F8F9FA",
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(33, 33, 33, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForBackgroundLines: {
+                stroke: "#e3e3e3",
+              },
+              propsForLabels: {
+                fontWeight: "bold",
+              },
+            }}
+            style={{
+              borderRadius: 16,
+            }}
+            fromZero
+            showValuesOnTopOfBars
+          />
+        </View>
+      </View>
       {/* Main Features Section */}
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Smart Tools</ThemedText>
@@ -92,10 +200,10 @@ export default function CropScreen() {
             </View>
             <View style={styles.featureInfo}>
               <ThemedText style={styles.featureTitle}>
-                Yield Estimator
+                Visual Yield Estimator
               </ThemedText>
               <ThemedText style={styles.featureSubtitle}>
-                Predict crop output
+                Predict crop quantity and productivity
               </ThemedText>
             </View>
             <TouchableOpacity style={styles.featureButton} activeOpacity={0.8}>
@@ -107,8 +215,8 @@ export default function CropScreen() {
             </TouchableOpacity>
           </View>
           <ThemedText style={styles.featureDescription}>
-            Estimate your crop yield and cost visually. Upload photos or enter
-            details for accurate predictions.
+            Easily visualize and calculate your expected crop yield and
+            associated costs using images and intuitive tools.
           </ThemedText>
           <TouchableOpacity
             style={styles.secondaryActionButton}
@@ -125,107 +233,47 @@ export default function CropScreen() {
             </ThemedText>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Quick Actions Grid */}
-      <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
-        <View style={styles.quickActionsGrid}>
-          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
-            <View style={styles.quickActionIcon}>
-              <MaterialCommunityIcons
-                name="weather-partly-cloudy"
-                size={24}
-                color="#2196F3"
-              />
+        {/* Visual Growth Estimator */}
+        <View style={styles.featureCard}>
+          <View style={styles.featureHeader}>
+            <View style={styles.featureIconContainer}>
+              <MaterialCommunityIcons name="seed" size={28} color="#2196F3" />
             </View>
-            <ThemedText style={styles.quickActionTitle}>Weather</ThemedText>
-            <ThemedText style={styles.quickActionSubtitle}>
-              Check forecast
-            </ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
-            <View style={styles.quickActionIcon}>
-              <MaterialCommunityIcons
-                name="calendar-clock"
-                size={24}
-                color="#FF9800"
-              />
+            <View style={styles.featureInfo}>
+              <ThemedText style={styles.featureTitle}>
+                Visual Growth Estimator
+              </ThemedText>
+              <ThemedText style={styles.featureSubtitle}>
+                Track crop growth visually
+              </ThemedText>
             </View>
-            <ThemedText style={styles.quickActionTitle}>Schedule</ThemedText>
-            <ThemedText style={styles.quickActionSubtitle}>
-              Manage tasks
-            </ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
-            <View style={styles.quickActionIcon}>
-              <MaterialCommunityIcons
-                name="chart-line"
-                size={24}
-                color="#4CAF50"
+            <TouchableOpacity style={styles.featureButton} activeOpacity={0.8}>
+              <MaterialIcons
+                name="arrow-forward-ios"
+                size={16}
+                color={Colors.light.primary}
               />
-            </View>
-            <ThemedText style={styles.quickActionTitle}>Analytics</ThemedText>
-            <ThemedText style={styles.quickActionSubtitle}>
-              View insights
+            </TouchableOpacity>
+          </View>
+          <ThemedText style={styles.featureDescription}>
+            Monitor crop growth stages and get visual insights for better
+            planning.
+          </ThemedText>
+          <TouchableOpacity
+            style={styles.secondaryActionButtonBlue}
+            activeOpacity={0.85}
+          >
+            <MaterialIcons
+              name="timeline"
+              size={20}
+              color="#fff"
+              style={{ marginRight: 8 }}
+            />
+            <ThemedText style={styles.secondaryActionText}>
+              Estimate Growth
             </ThemedText>
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8}>
-            <View style={styles.quickActionIcon}>
-              <MaterialCommunityIcons
-                name="book-open-variant"
-                size={24}
-                color="#9C27B0"
-              />
-            </View>
-            <ThemedText style={styles.quickActionTitle}>Guide</ThemedText>
-            <ThemedText style={styles.quickActionSubtitle}>
-              Learn farming
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Recent Activity */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>Recent Activity</ThemedText>
-          <TouchableOpacity activeOpacity={0.8}>
-            <ThemedText style={styles.viewAllText}>View All</ThemedText>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.activityCard}>
-          <View style={styles.activityIcon}>
-            <MaterialCommunityIcons name="leaf" size={20} color="#4CAF50" />
-          </View>
-          <View style={styles.activityContent}>
-            <ThemedText style={styles.activityTitle}>
-              Wheat crop scanned
-            </ThemedText>
-            <ThemedText style={styles.activitySubtitle}>
-              Healthy - No issues detected
-            </ThemedText>
-            <ThemedText style={styles.activityTime}>2 hours ago</ThemedText>
-          </View>
-        </View>
-
-        <View style={styles.activityCard}>
-          <View style={styles.activityIcon}>
-            <MaterialCommunityIcons name="sprout" size={20} color="#FF9800" />
-          </View>
-          <View style={styles.activityContent}>
-            <ThemedText style={styles.activityTitle}>
-              Yield estimate updated
-            </ThemedText>
-            <ThemedText style={styles.activitySubtitle}>
-              Corn field - 85% expected yield
-            </ThemedText>
-            <ThemedText style={styles.activityTime}>1 day ago</ThemedText>
-          </View>
         </View>
       </View>
     </ScrollView>
@@ -405,6 +453,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  secondaryActionButtonBlue: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2196F3",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    shadowColor: "#2196F3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   secondaryActionText: {
     color: "#fff",
     fontWeight: "600",
@@ -485,5 +547,87 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.light.text,
     opacity: 0.6,
+  },
+  priceInfoRow: {
+    flexDirection: "row",
+    paddingHorizontal: 4,
+    marginBottom: 24,
+  },
+  priceCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    width: 120,
+    marginHorizontal: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  priceCropName: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.primary,
+    marginBottom: 2,
+  },
+  priceValue: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.light.text,
+    opacity: 0.85,
+  },
+  periodDropdownContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+    minWidth: 140,
+    maxWidth: 180,
+    alignSelf: "flex-end",
+    marginRight: 10,
+  },
+  periodDropdown: {
+    height: 36,
+    color: Colors.light.primary,
+    fontWeight: "600",
+    fontSize: 15,
+    backgroundColor: "#fff",
+  },
+  periodDropdownItem: {
+    fontSize: 15,
+    color: Colors.light.primary,
+    fontWeight: "600",
+  },
+  dropdownWrapper: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    overflow: "visible",
+    marginBottom: 12,
+    width: 120,
+    alignSelf: "flex-end",
+    marginRight: 10,
+  },
+  dropdownPicker: {
+    backgroundColor: "#fff",
+    borderColor: Colors.light.primary,
+    borderRadius: 16,
+    minHeight: 40,
+    paddingHorizontal: 14,
+    fontWeight: "600",
+    fontSize: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
 });

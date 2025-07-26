@@ -10,13 +10,20 @@ import {
 } from "react-native";
 
 export default function DashboardScreen() {
-  const { user, logout } = useAuth();
+  const { logout, user } = useAuth();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const displayName = "User";
+  const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
+  const displayName = user?.displayName || "";
   const firstLetter = displayName.charAt(0).toUpperCase();
 
   const handleProfilePress = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
+    setIsHamburgerMenuOpen(false); // Close hamburger menu when profile is opened
+  };
+
+  const handleHamburgerPress = () => {
+    setIsHamburgerMenuOpen(!isHamburgerMenuOpen);
+    setIsProfileMenuOpen(false); // Close profile menu when hamburger is opened
   };
 
   const handleLogout = async () => {
@@ -26,6 +33,12 @@ export default function DashboardScreen() {
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const handleMenuOptionPress = (option: string) => {
+    console.log(`Selected: ${option}`);
+    setIsHamburgerMenuOpen(false);
+    // Add navigation logic here for News and Community
   };
 
   return (
@@ -40,12 +53,24 @@ export default function DashboardScreen() {
           </TouchableOpacity>
           <View>
             <Text style={styles.helloText}>Hello</Text>
-            <Text style={styles.nameText}>{displayName.split(" ")[0]}</Text>
+            <Text style={styles.nameText}>{displayName}</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.hamburgerButton}>
-          <MaterialIcons name="menu" size={28} color="#2d3748" />
-        </TouchableOpacity>
+        {!isHamburgerMenuOpen ? (
+          <TouchableOpacity
+            style={styles.hamburgerButton}
+            onPress={handleHamburgerPress}
+          >
+            <MaterialIcons name="menu" size={28} color="#2d3748" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.hamburgerButton}
+            onPress={handleHamburgerPress}
+          >
+            <MaterialIcons name="close" size={28} color="#2d3748" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Profile Menu */}
@@ -54,6 +79,26 @@ export default function DashboardScreen() {
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <MaterialIcons name="logout" size={20} color="#dc2626" />
             <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Hamburger Menu Dropdown */}
+      {isHamburgerMenuOpen && (
+        <View style={styles.hamburgerMenu}>
+          <TouchableOpacity
+            style={styles.menuOption}
+            onPress={() => handleMenuOptionPress("News")}
+          >
+            <MaterialIcons name="article" size={20} color="#374151" />
+            <Text style={styles.menuOptionText}>News</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuOption}
+            onPress={() => handleMenuOptionPress("Community")}
+          >
+            <MaterialIcons name="people" size={20} color="#374151" />
+            <Text style={styles.menuOptionText}>Community</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -85,7 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 60,
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
   topRow: {
@@ -142,6 +187,37 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     zIndex: 1000,
+  },
+  hamburgerMenu: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    zIndex: 1000,
+    minWidth: 140,
+  },
+  menuOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  menuOptionText: {
+    color: "#374151",
+    fontSize: 16,
+    fontWeight: "500",
+    marginLeft: 12,
   },
   logoutButton: {
     flexDirection: "row",
