@@ -1,7 +1,7 @@
 import {
-    DarkTheme,
-    DefaultTheme,
-    ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -71,6 +71,10 @@ export default function RootLayout() {
                 />
                 <Stack.Screen
                   name="(social)/add-community-post"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(chatbot)/chatbot"
                   options={{ headerShown: false }}
                 />
               </Stack>
