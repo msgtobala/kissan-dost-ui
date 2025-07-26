@@ -1,5 +1,4 @@
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/contexts/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -9,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -60,112 +60,112 @@ export default function SignupScreen() {
   const handleLogin = () => {
     router.push("/auth/login");
   };
+
   return (
-    <LinearGradient colors={["#effbf4", "#d7f2e1"]} style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <ThemedView style={styles.content}>
-            <ThemedText
-              type="title"
-              style={[styles.title, { color: "#275d63" }]}
-            >
-              Create Account
-            </ThemedText>
-            <ThemedText style={[styles.subtitle, { color: "#275d63" }]}>
-              Join Kissan Dost and start your farming journey
-            </ThemedText>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f8faf8" />
+      <LinearGradient colors={["#f8faf8", "#e8f5e8"]} style={styles.gradient}>
+        <KeyboardAvoidingView
+          style={styles.keyboardView}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.header}>
+              <ThemedText style={styles.timeText}>9:41</ThemedText>
+            </View>
 
-            <View style={styles.form}>
-              <View style={styles.inputContainer}>
-                <ThemedText style={[styles.label, { color: "#275d63" }]}>
-                  Full Name
+            <View style={styles.content}>
+              <View style={styles.titleSection}>
+                <ThemedText style={styles.title}>Create Account</ThemedText>
+                <ThemedText style={styles.subtitle}>
+                  Join Kissan Dost and start your farming journey
                 </ThemedText>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your full name"
-                  placeholderTextColor="#275d63aa"
-                  value={name}
-                  onChangeText={setName}
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                />
               </View>
 
-              <View style={styles.inputContainer}>
-                <ThemedText style={[styles.label, { color: "#275d63" }]}>
-                  Email
-                </ThemedText>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your email"
-                  placeholderTextColor="#275d63aa"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
+              <View style={styles.form}>
+                <View style={styles.inputContainer}>
+                  <ThemedText style={styles.label}>Full Name</ThemedText>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your full name"
+                    placeholderTextColor="#8a9a8a"
+                    value={name}
+                    onChangeText={setName}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                </View>
 
-              <View style={styles.inputContainer}>
-                <ThemedText style={[styles.label, { color: "#275d63" }]}>
-                  Password
-                </ThemedText>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Create a password"
-                  placeholderTextColor="#275d63aa"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </View>
+                <View style={styles.inputContainer}>
+                  <ThemedText style={styles.label}>Email Address</ThemedText>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    placeholderTextColor="#8a9a8a"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
 
-              <View style={styles.inputContainer}>
-                <ThemedText style={[styles.label, { color: "#275d63" }]}>
-                  Confirm Password
-                </ThemedText>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Confirm your password"
-                  placeholderTextColor="#275d63aa"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </View>
+                <View style={styles.inputContainer}>
+                  <ThemedText style={styles.label}>Password</ThemedText>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Create a password"
+                    placeholderTextColor="#8a9a8a"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                </View>
 
-              <TouchableOpacity
-                style={[
-                  styles.signupButton,
-                  isLoading && styles.disabledButton,
-                ]}
-                onPress={handleSignup}
-                disabled={isLoading}
-              >
-                <ThemedText style={styles.signupButtonText}>
-                  {isLoading ? "Creating Account..." : "Create Account"}{" "}
-                </ThemedText>
-              </TouchableOpacity>
+                <View style={styles.inputContainer}>
+                  <ThemedText style={styles.label}>Confirm Password</ThemedText>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Confirm your password"
+                    placeholderTextColor="#8a9a8a"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                </View>
 
-              <View style={styles.loginContainer}>
-                <ThemedText style={[styles.loginText, { color: "#275d63" }]}>
-                  Already have an account?{" "}
-                </ThemedText>
-                <TouchableOpacity onPress={handleLogin}>
-                  <ThemedText style={styles.loginLink}>Sign In</ThemedText>
+                <TouchableOpacity
+                  style={[
+                    styles.signupButton,
+                    isLoading && styles.disabledButton,
+                  ]}
+                  onPress={handleSignup}
+                  disabled={isLoading}
+                >
+                  <ThemedText style={styles.signupButtonText}>
+                    {isLoading ? "Creating Account..." : "Create Account"}
+                  </ThemedText>
                 </TouchableOpacity>
+
+                <View style={styles.loginContainer}>
+                  <ThemedText style={styles.loginText}>
+                    Already have an account?{" "}
+                  </ThemedText>
+                  <TouchableOpacity onPress={handleLogin}>
+                    <ThemedText style={styles.loginLink}>Sign In</ThemedText>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </ThemedView>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </View>
   );
 }
 
@@ -173,72 +173,93 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  gradient: {
+    flex: 1,
+  },
+  keyboardView: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "center",
+  },
+  header: {
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  timeText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2d3748",
+    textAlign: "right",
   },
   content: {
-    padding: 24,
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  titleSection: {
     alignItems: "center",
-    backgroundColor: "transparent",
+    marginBottom: 50,
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 8,
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#2d3748",
+    marginBottom: 12,
     textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
-    marginBottom: 40,
+    color: "#718096",
     textAlign: "center",
-    opacity: 0.8,
+    lineHeight: 24,
   },
   form: {
     width: "100%",
-    maxWidth: 400,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   label: {
     fontSize: 16,
     fontWeight: "600",
+    color: "#2d3748",
     marginBottom: 8,
   },
   input: {
-    height: 50,
-    borderWidth: 2,
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    height: 56,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 20,
     fontSize: 16,
     backgroundColor: "white",
-    color: "#275d63",
-    borderColor: "#275d63",
-    shadowColor: "#275d63",
+    color: "#2d3748",
+    borderColor: "#e2e8f0",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   signupButton: {
-    height: 50,
-    borderRadius: 12,
+    height: 56,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
-    backgroundColor: "#e58948",
-    shadowColor: "#e58948",
+    marginTop: 32,
+    backgroundColor: "#48bb78",
+    shadowColor: "#48bb78",
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   disabledButton: {
     opacity: 0.6,
@@ -251,14 +272,15 @@ const styles = StyleSheet.create({
   loginContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 24,
+    marginTop: 32,
   },
   loginText: {
     fontSize: 16,
+    color: "#718096",
   },
   loginLink: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#e58948",
+    color: "#48bb78",
   },
 });

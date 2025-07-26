@@ -10,6 +10,7 @@ import "react-native-reanimated";
 
 import AuthWrapper from "@/components/AuthWrapper";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { OnboardingProvider } from "@/contexts/OnboardingContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function RootLayout() {
@@ -27,14 +28,24 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <AuthWrapper>
-          <Stack>
-            <Stack.Screen name="auth" options={{ headerShown: false }} />
-          </Stack>
-        </AuthWrapper>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <OnboardingProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <AuthWrapper>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="auth" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="onboarding"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="home" options={{ headerShown: false }} />
+            </Stack>
+          </AuthWrapper>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </OnboardingProvider>
     </AuthProvider>
   );
 }

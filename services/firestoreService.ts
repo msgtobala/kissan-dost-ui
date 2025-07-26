@@ -1,19 +1,6 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  onSnapshot,
-  orderBy,
-  query,
-  Timestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../config/firebase";
+import { db } from "@/config/firebase";
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 
-// Types
 export interface Crop {
   id?: string;
   name: string;
@@ -37,143 +24,95 @@ export interface WeatherData {
   userId: string;
 }
 
+export interface UserProfile {
+  id?: string;
+  userId: string;
+  age: number;
+  gender: "Male" | "Female" | "Other";
+  state: string;
+  village: string;
+  taluk: string;
+  location: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  };
+  phoneNumber: string;
+  soilType: SoilType;
+  primaryCrop: string;
+  seasonalCrops: string[];
+  pesticidePreference: PesticidePreference;
+  isOnboardingComplete: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export type SoilType =
+  | "Alluvial"
+  | "Black"
+  | "Red"
+  | "Laterite"
+  | "Mountain"
+  | "Desert"
+  | "Peaty"
+  | "Saline";
+
+export type PesticidePreference = "Organic" | "Chemical" | "Mixed" | "None";
+
 class FirestoreService {
-  // Crops Collection
-  async addCrop(
-    cropData: Omit<Crop, "id" | "createdAt" | "updatedAt">
-  ): Promise<string> {
+  // User Profile Collection
+  async getUserProfile(userId: string): Promise<UserProfile | null> {
     try {
-      const docRef = await addDoc(collection(db, "crops"), {
-        ...cropData,
-        plantedDate: Timestamp.fromDate(cropData.plantedDate),
-        expectedHarvest: Timestamp.fromDate(cropData.expectedHarvest),
+      console.log("FirestoreService: Getting user profile for userId:", userId);
+      const docSnap = await getDoc(doc(db, "userProfiles", userId));
+
+      console.log("FirestoreService: Document exists:", docSnap.exists);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log("FirestoreService: Document data:", data);
+        const userProfile = {
+          id: docSnap.id,
+          ...data,
+          createdAt: data?.createdAt?.toDate(),
+          updatedAt: data?.updatedAt?.toDate(),
+        } as UserProfile;
+        console.log("FirestoreService: Returning user profile:", userProfile);
+        return userProfile;
+      }
+      console.log("FirestoreService: No document found, returning null");
+      return null;
+    } catch (error) {
+      console.error("FirestoreService: Error getting user profile:", error);
+      throw error;
+    }
+  }
+
+  async createUserProfile(
+    profileData: Omit<UserProfile, "id" | "createdAt" | "updatedAt">
+  ): Promise<void> {
+    try {
+      await setDoc(doc(db, "userProfiles", profileData.userId), {
+        ...profileData,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
-      return docRef.id;
     } catch (error) {
-      console.error("Error adding crop:", error);
+      console.error("Error creating user profile:", error);
       throw error;
     }
   }
 
-  async getCropsByUser(userId: string): Promise<Crop[]> {
+  async markOnboardingComplete(userId: string): Promise<void> {
     try {
-      const q = query(
-        collection(db, "crops"),
-        where("userId", "==", userId),
-        orderBy("createdAt", "desc")
-      );
-      const querySnapshot = await getDocs(q);
-
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        plantedDate: doc.data().plantedDate.toDate(),
-        expectedHarvest: doc.data().expectedHarvest.toDate(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Crop[];
-    } catch (error) {
-      console.error("Error getting crops:", error);
-      throw error;
-    }
-  }
-
-  async updateCrop(cropId: string, updates: Partial<Crop>): Promise<void> {
-    try {
-      const cropRef = doc(db, "crops", cropId);
-      const updateData: any = {
-        ...updates,
+      await updateDoc(doc(db, "userProfiles", userId), {
+        isOnboardingComplete: true,
         updatedAt: Timestamp.now(),
-      };
-
-      // Convert dates to Timestamps if they exist
-      if (updates.plantedDate) {
-        updateData.plantedDate = Timestamp.fromDate(updates.plantedDate);
-      }
-      if (updates.expectedHarvest) {
-        updateData.expectedHarvest = Timestamp.fromDate(
-          updates.expectedHarvest
-        );
-      }
-
-      await updateDoc(cropRef, updateData);
-    } catch (error) {
-      console.error("Error updating crop:", error);
-      throw error;
-    }
-  }
-
-  async deleteCrop(cropId: string): Promise<void> {
-    try {
-      await deleteDoc(doc(db, "crops", cropId));
-    } catch (error) {
-      console.error("Error deleting crop:", error);
-      throw error;
-    }
-  }
-
-  // Weather Data Collection
-  async addWeatherData(weatherData: Omit<WeatherData, "id">): Promise<string> {
-    try {
-      const docRef = await addDoc(collection(db, "weather"), {
-        ...weatherData,
-        date: Timestamp.fromDate(weatherData.date),
       });
-      return docRef.id;
     } catch (error) {
-      console.error("Error adding weather data:", error);
+      console.error("Error marking onboarding complete:", error);
       throw error;
     }
-  }
-
-  async getWeatherDataByUser(
-    userId: string,
-    limit: number = 10
-  ): Promise<WeatherData[]> {
-    try {
-      const q = query(
-        collection(db, "weather"),
-        where("userId", "==", userId),
-        orderBy("date", "desc")
-      );
-      const querySnapshot = await getDocs(q);
-
-      return querySnapshot.docs.slice(0, limit).map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        date: doc.data().date.toDate(),
-      })) as WeatherData[];
-    } catch (error) {
-      console.error("Error getting weather data:", error);
-      throw error;
-    }
-  }
-
-  // Real-time listeners
-  subscribeToCrops(
-    userId: string,
-    callback: (crops: Crop[]) => void
-  ): () => void {
-    const q = query(
-      collection(db, "crops"),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc")
-    );
-
-    return onSnapshot(q, (querySnapshot) => {
-      const crops = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        plantedDate: doc.data().plantedDate.toDate(),
-        expectedHarvest: doc.data().expectedHarvest.toDate(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Crop[];
-
-      callback(crops);
-    });
   }
 }
 

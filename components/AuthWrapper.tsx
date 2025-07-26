@@ -1,30 +1,45 @@
-import { useAuth } from "@/contexts/AuthContext";
+// app/AuthWrapper.tsx
 import { useRouter, useSegments } from "expo-router";
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function AuthWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, loading, isOnboardingComplete } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+
   useEffect(() => {
     if (loading) return;
 
     const inAuthGroup = segments[0] === "auth";
+    const inOnboardingGroup = segments[0] === "onboarding";
+
+    console.log("Index: Current state", {
+      user: user ? "exists" : "null",
+      isOnboardingComplete,
+    });
 
     if (!user && !inAuthGroup) {
-      // Redirect to auth if user is not authenticated
+      console.log("Index: No user, redirecting to login");
       router.replace("/auth/login");
     } else if (user && inAuthGroup) {
-      // User is authenticated but still in auth flow
-      // Keep them in auth for now since we only have auth screens
-      // You can add a main screen later and redirect there
+      console.log(
+        "Index: Authenticated user but in auth route, redirecting to home"
+      );
+      router.replace("/home");
+    } else if (user && !inOnboardingGroup && !isOnboardingComplete) {
+      console.log("Index: User not onboarded, redirecting to onboarding");
+      router.replace("/onboarding");
+    } else if (user && inOnboardingGroup && isOnboardingComplete) {
+      console.log("Index: Onboarding complete, redirecting to home");
+      router.replace("/home");
     }
-  }, [user, segments, loading, router]);
+  }, [user, loading, isOnboardingComplete, segments, router]);
 
   if (loading) {
     return (
