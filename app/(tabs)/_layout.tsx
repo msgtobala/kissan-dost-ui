@@ -82,6 +82,22 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="news"
+        options={{
+          title: "News",
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              style={[
+                styles.iconContainer,
+                focused && styles.activeIconContainer,
+              ]}
+            >
+              <MaterialIcons name="article" size={24} color={color} />
+            </View>
+          ),
+        }}
+      />
     </Tabs>
   );
 }
